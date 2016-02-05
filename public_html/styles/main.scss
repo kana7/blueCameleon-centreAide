@@ -1,0 +1,612 @@
+.scrollToTop{
+    z-index: 5;
+    width: 100%;
+    height: 60px;
+    padding:10px;
+    text-align:center;
+    background: #ccc;
+    font-weight: bold;
+    color: #444;
+    text-decoration: none;
+    position: fixed;
+    bottom: 0;
+    right: 0;    
+    display:none;
+}
+.is-visible {
+    display: block
+}
+.slideContent li:hover {
+    background-color: #777;
+    color: white;
+}
+.contentList a:last-child li {
+    padding-bottom: 10px;
+}
+.is-hidden {
+    display: none;
+}
+.dropButton:hover {
+    background-color: #ccc;
+    color: #555;
+}
+.dp-hover  {
+    height: 3px;
+    width: 100%;
+    position: absolute;
+    text-align: center;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: #004994;
+}
+.dp-hover i {
+    z-index: 1001;
+    display: inline-block;
+    position: absolute;
+    color: #004994;
+    font-size: 17px;
+    top: -4px;
+    left: 0;
+    right: 0;
+}
+.i {
+    position: relative;
+    bottom: 10px;
+    font-size: 4em;
+}
+.scrollToTop:hover {
+    text-decoration:none;
+}
+body {
+    background-color: white;
+    overflow-x: hidden;
+}
+a {
+    text-decoration: none;
+    color: #004994;
+}
+a:hover {
+    cursor: pointer;
+    text-decoration: none;
+}
+.dp-menu:hover {
+    background-color: #004994;
+    color: white;
+}
+a:active {
+    text-decoration: none;
+}
+p {
+    margin: 20px;
+    margin-top: 0;
+}
+h1 {
+    color: #555;
+    text-align: center;
+}h4 {
+    background-color: #004994;
+    color: white;
+}
+.container {
+    z-index: 10000;
+    position: relative;
+    width: 100%;
+    background-color: white;
+}
+.MainBanner {
+    width: 100%;
+    display: inline-block;
+}
+.MainBannerLeft {
+    background-color: #00559d;
+    text-transform: uppercase;
+    color: white;
+    z-index: 0;
+    height: 80px;
+}
+.MainBannerRight {
+    background-color: #00559d;
+    color: white;
+}
+.SearchBar i {
+    color: #00559d;
+    position: relative;
+    bottom: 0px;
+}
+.input-group {
+    position: relative;
+    display: table;
+}
+.input-group button {
+    height: 34px;
+}
+.nav {
+    list-style: none;
+    margin-bottom: 0;
+}
+.navbar-form {
+    margin: 0px;
+}
+.MainBanner img {
+    width: 190px;
+    padding: 16px;
+}
+.TextBanner {
+    font-weight: bold;
+    min-width: 28px;
+    position: absolute;
+    padding: 20px;
+    padding-right: 0px;
+    padding-left: 10px;
+    top: 7px;
+    left: 185px;
+}
+.PhoneMenu {
+    cursor: pointer;
+    width: 35px;
+    height: 34px;
+    background-color: white;
+    position: absolute;
+    top: 91px;
+    left: 20px;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    border: 1px solid #ccc;
+    z-index: 0;
+}
+.PhoneMenu i {
+    color: #00559d;
+    position: absolute;
+    margin: 0 auto;
+    width: 38%;
+    top: 9px;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+.PhoneMenuContainer {
+    background-color: white;
+    width: 90%;
+    left: -92%;
+    min-height: 1000px;
+    position: absolute;
+    top: 138px;
+    bottom: 0;
+    z-index: 3;
+    box-shadow: 6px 0px 8px 0px rgba(0, 0, 0, 0.28);
+}
+.SlideMenu {
+    width: 100%;
+}
+.SlideMenu ul {
+    padding-left: 0px;
+}
+.slide {
+    list-style: none;
+    width: 100%;
+    height: 54px;
+    border-bottom: 1px solid #CCCCCC;
+    cursor: pointer;
+}
+.slideContent {
+    color: white;
+    background-color: #ddd;    
+}
+.slideTitle {
+    padding: 8px 10px;
+    color: #FFF;
+    font-size: 1.2em;
+    border-bottom: 1px solid #ccc;    
+}
+.slideTitle i {
+    color: #777777;
+    float: right;
+    position: relative;
+    top: 6px;
+    right: 10px;
+    font-size: 1.3em;
+}
+.slideContent ul {
+    list-style: none;
+    padding-left: 0px;
+}
+.slideContent li {
+    width: 100%;
+    padding: 11px 25px;
+    border-bottom: 1px solid #ccc;    
+    font-size: 12px;
+}
+.slideContent a {
+    color: #286090;
+    text-decoration: none;
+}
+.MainContainer {
+    width: 100%;   
+    background-color: #FFF;
+    position: relative;
+    z-index: 1;
+    border-left: 1px solid #cccccc;
+    box-shadow: -5px 0px 8px -3px #aaaaaa;
+}
+.breadcrumb {
+    width: 100%;
+    padding: 15px 20px;
+    margin: 0px;
+    background-color: #eee;
+    border-bottom: 1px solid #cccccc;
+}
+.breadcrumb a {
+    color: gray;
+}
+.HomeBanner {
+    width: 100%;    
+    padding: 0px 10px;
+}
+.phoneContent {
+    margin-bottom: 20px;
+    background-color: #004994;
+}
+.phoneContent-slide {
+    background-color: #004994;
+}
+.phoneContent-slide-title {    
+    background-color: #004994;
+    margin: 9px 20px;
+    padding: 0px;
+    font-size: 1.2em;
+    color: white;   
+}
+.phoneContent-slide-title i {
+    color: white;
+    float: right;
+    position: relative;
+    top: 2px;
+    right: 15px;
+    font-size: 1.3em;
+}
+.phoneContent-slide-content {
+    width: 100%;
+    background-color: #FFFFFF;
+    margin: 0px 0px 0px 0px;
+}
+.phoneContent-slide-content ul {
+    list-style: none;
+}
+.phoneContent-slide-content li {
+    height: 40px;
+    padding: 9px 20px;
+    color: #777777;
+    border-bottom: 1px solid #cccccc;
+    font-size: 13px;
+    margin-right: 0px;
+}
+.phoneContent-img {
+    width: 100%;
+    height: 200px;
+}
+.panel-heading {
+    background-color: #004994;
+    color: white;
+}
+.panel-body {
+    background-color: white;
+}
+.panel-body li {
+    list-style:  none;
+}
+.panel-title {
+    font-weight: bold;
+}
+.input-group {
+    position: relative;
+    display: table;
+}
+.image {
+    margin: 10px 10px;
+}
+.image img{
+    width: 100%;
+}
+.dp-menu {
+    border-right: none !important;
+}
+.slideStyle {
+    background-color: white;
+    color: #31708f;
+}
+.contentList {
+    padding: 0px 0px;
+    background-color: white;
+}
+.contentList-niv4 {
+    padding: 10px 20px;
+    background-color: #004994;
+}
+.contentList li {
+    color: #555;
+}
+.contentList-niv4 li {
+    color: #DDEFFF;
+}
+.contentList-niv4 ul {
+    padding-left: 10px;
+    list-style: none;
+}
+.texte {
+    text-align: justify;
+    font-size: 13px;
+    margin-bottom: 35px;
+    padding: 0px 10px;
+}
+.list-title {
+    padding: 10px 20px;
+}
+.blockList-niv4 {    
+    border: 1px solid #777;    
+}
+.panel-body-niv-4 {
+    padding: 10px;
+}
+.blockListTitle-niv4 {
+    border-bottom: 1px solid #337ab7;
+}
+.hidemenu{
+    width: auto;
+}
+
+.nav-tabs>li{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nav>li {
+    width: 25%;
+    border-right: 1px solid #aaa9a9;
+    border-bottom: 1px solid #aaa9a9;
+}
+
+.hidemenu>a, .hidemenu li{
+    display: block;
+}
+
+@media (min-width: 320px) and (max-width: 375px) {
+    .TextBanner {
+        top: 7px;
+        padding: 8.5px 8px;
+    }
+}
+
+/*--- PHONES ---*/
+
+@media (min-width: 320px) {
+
+    #last {
+        margin-bottom: 60px;
+    }
+    MainBanner img {
+        left: 0px;
+    }
+    .MainBannerRight {
+        height: 57px;
+        z-index: 0;
+    }
+    .nav {
+        padding-left: 0%;
+        padding-right: 0%;
+    }
+    .input-group {
+        width: 90%;
+        left: 27px;
+    }
+    .mainContent {
+        width: 100%;
+        z-index: 0;       
+        position: relative;
+        background-color: #FFF;        
+    }
+    .blockList {
+        border-bottom: 1px solid #777;
+        border-left: 1px solid #777;
+        border-right: 1px solid #777;
+    }
+    .contentList li {
+        padding: 10px 20px 0px;
+        margin-bottom: 0;
+        font-size: 12px;
+    }
+    .contentList ul {        
+        list-style: none;
+    }
+    .RightContent {
+        float: right;
+        margin-bottom: 60px;
+    }
+    .RightContent li {
+        margin-bottom: 10px;
+    }
+    .imgDescription {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    img {
+        max-width: 100%;
+    }
+    .panel-group {
+        margin-bottom: 25px;
+    }
+}
+
+/*--- PHONES LANDSCAPE ---*/
+
+@media (min-width: 570px) and (max-width: 767px) {
+    .MainBannerRight {
+        height: 57px;
+        z-index: 0;
+    }    
+    .MainMenu {
+        text-align: center;
+        height: 121px;
+        background-color: white;
+        border-bottom: 1px solid #aaa9a9;
+    }
+    .hidemenu {
+        position: absolute;
+        z-index: 1000;
+        display: none;        
+        padding: 0px;
+        background-color: white;        
+    }
+    .dropButton {
+        cursor: pointer;
+        background-color: white;
+        border: 0px;
+        width: 100%;
+        height: 40px;
+        color: #777777;
+    }    
+    .input-group {
+        width: 90%;
+        left: 27px;
+    }
+}
+
+/*--- TABLET ---*/
+
+@media (min-width: 768px) {
+    .scrollToTop {
+        width: 60px;
+        bottom: 20px;
+        right: 20px;
+        border: none;
+    }
+    .MainBannerRight {
+        height: 80px;
+        z-index: 0;
+    }
+    .mainContent {
+        width: 100%;
+        z-index: 0;
+        padding-left: 12%;
+        padding-right: 12%;
+        padding-bottom: 5px;
+        position: relative;
+        background-color: #FFF;        
+    }
+    .HomeBanner {
+        background-color: #FFF;
+    }
+    .MainMenu {
+        text-align: center;
+        height: 121px;
+        background-color: white;
+        border-bottom: 1px solid #aaa9a9;
+    }
+    .hidemenu {
+        z-index: 1000;
+        padding: 0px;
+        background-color: white;
+    }
+    .hidemenu li {
+        color: #777777;
+        list-style: none;
+        padding: 10px 10px;
+        width: auto;
+        border-top: 1px solid #ccc;
+    }
+    .dropButton {
+        cursor: pointer;
+        background-color: white;
+        padding: 0 15px;
+        border: 0px;
+        width: 100%;
+        line-height: 40px;
+        height: 40px;
+        color: #777777;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .SearchBar {
+        position: absolute;
+        right: 71px;
+        top: 20px;
+    }
+    .panel-group {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        margin-left: 0%;
+    }
+    .input-group {
+        width: 100%;
+        left: 27px;
+    }
+    .blockList {
+        border-bottom: 1px solid #777;
+        border-left: 1px solid #777;
+        border-right: 1px solid #777;
+        margin-bottom: 30px;
+        margin-right: 20px;
+    }
+}
+
+/*--- DESKTOPS ---*/
+
+@media (min-width: 992px) {
+    .MainBannerRight {
+        height: 80px;
+        z-index: 0;
+    }
+    .HomeBanner {
+        background-color: #FFF;
+        margin: 0px;
+    }
+    .MainMenu {
+        text-align: center;
+        height: 121px;
+        background-color: white;
+        border-bottom: 1px solid #aaa9a9;
+    }
+    .mainContent {
+        margin: 0 auto;
+        width: 100%;
+        min-height: 100%;
+        z-index: 0;
+        padding-left: 40px;
+        padding-right: 40px;
+        padding-bottom: 0px;
+        position: relative;
+        background-color: #FFF;
+    }
+    .SearchBar {
+        position: absolute;
+        right: 71px;
+        top: 20px;
+    }
+    .panel-group {
+        width: 50%;
+        margin: 0 auto 3%;
+    }
+    .input-group {
+        width: 100%;
+        left: 27px;
+    }
+    .RightContent {
+        margin-right: 5%;
+        margin-top: 2%;
+    }
+    .blockList {
+        border-bottom: 1px solid #777;
+        border-left: 1px solid #777;
+        border-right: 1px solid #777;
+        margin-bottom: 30px;
+        margin-right: 20px;
+    }
+}
+@media (min-width: 1010px){
+    .nav>li {
+        border-right: 1px solid #DCDCDC;
+        width: auto;
+        border-left: none !important;
+    }
+}

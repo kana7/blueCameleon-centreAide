@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TEST Centre d'aide</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- FAVICON -->
+        <link rel="icon" href="#">
+        <link rel="icon" type="image/png" href="#">
+        <!-- BOOTSTRAP -->
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+        <!-- FONT AWESOME -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+        <!-- CSS -->
+        <link href="css/main.css" rel="stylesheet" type="text/css">
+        <style type="text/css"></style>
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+    </head>
+    <body>
+        <div class="container clearfix">
+            <!-- START HEADER -->
+            <script>
+                function stripAccents(str) {
+                    var rExps = [
+                        {re: /[\xC0-\xC6]/g, ch: 'A'},
+                        {re: /[\xE0-\xE6]/g, ch: 'a'},
+                        {re: /[\xC8-\xCB]/g, ch: 'E'},
+                        {re: /[\xE8-\xEB]/g, ch: 'e'},
+                        {re: /[\xCC-\xCF]/g, ch: 'I'},
+                        {re: /[\xEC-\xEF]/g, ch: 'i'},
+                        {re: /[\xD2-\xD6]/g, ch: 'O'},
+                        {re: /[\xF2-\xF6]/g, ch: 'o'},
+                        {re: /[\xD9-\xDC]/g, ch: 'U'},
+                        {re: /[\xF9-\xFC]/g, ch: 'u'},
+                        {re: /[\xD1]/g, ch: 'N'},
+                        {re: /[\xF1]/g, ch: 'n'}];
+                    for (var i = 0, len = rExps.length; i < len; i++)
+                        str = str.replace(rExps[i].re, rExps[i].ch);
+                    return str;
+                }
+                ;
+                jQuery.extend({
+                    highlight: function (node, re, nodeName, className) {
+                        if (node.nodeType === 3) {
+                            //var match = node.data.match(re);
+                            var match = stripAccents(node.data).match(re);
+                            if (match) {
+                                var highlight = document.createElement(nodeName || 'span');
+                                highlight.className = className || 'highlight';
+                                var wordNode = node.splitText(match.index);
+                                wordNode.splitText(match[0].length);
+                                var wordClone = wordNode.cloneNode(true);
+                                highlight.appendChild(wordClone);
+                                wordNode.parentNode.replaceChild(highlight, wordNode);
+                                return 1; //skip added node in parent
+                            }
+                        } else if ((node.nodeType === 1 && node.childNodes) && // only element nodes that have children
+                                !/(script|style)/i.test(node.tagName) && // ignore script and style nodes
+                                !(node.tagName === nodeName.toUpperCase() && node.className === className)) { // skip if already highlighted
+                            for (var i = 0; i < node.childNodes.length; i++) {
+                                i += jQuery.highlight(node.childNodes[i], re, nodeName, className);
+                            }
+                        }
+                        return 0;
+                    }
+                });
+                jQuery.fn.unhighlight = function (options) {
+                    var settings = {className: 'highlight', element: 'span'};
+                    jQuery.extend(settings, options);
+                    return this.find(settings.element + "." + settings.className).each(function () {
+                        var parent = this.parentNode;
+                        parent.replaceChild(this.firstChild, this);
+                        parent.normalize();
+                    }).end();
+                };
+                jQuery.fn.highlight = function (words, options) {
+                    var settings = {className: 'highlight', element: 'span', caseSensitive: false, wordsOnly: false};
+                    jQuery.extend(settings, options);
+                    if (words.constructor === String) {
+                        words = [words];
+                    }
+                    words = jQuery.map(words, function (word, i) {
+                        return stripAccents(word);
+                    });
+                    var flag = settings.caseSensitive ? "" : "i";
+                    var pattern = "(" + words.join("|") + ")";
+                    if (settings.wordsOnly) {
+                        pattern = "\\b" + pattern + "\\b";
+                    }
+                    var re = new RegExp(pattern, flag);
+                    return this.each(function () {
+                        jQuery.highlight(this, re, settings.element, settings.className);
+                    });
+                };
+            </script>
+            <header>
+                <div class="row clearfix">
+                    <div class="MainBanner clearfix col-md-12 col-sm-12 col-xs-12">
+                        <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Default.phs">
+                            <div class="MainBannerLeft col-md-6 col-sm-6 col-xs-12">
+                                <img src="/images/Logo-LOLwhite.png">
+                                <div class="TextBanner" style="border-left:1px solid white">Centre D'assistance</div>
+                            </div>
+                        </a>
+                        <div class="MainBannerRight col-md-6 col-sm-6 col-xs-12">
+                            <div class="SearchBar">
+                                <form class="navbar-form navbar-left">
+                                    <div class="form-group input-group">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control submfield" placeholder="Trouver des réponses" id="_SearchTxt" name="_SearchTxt">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" type="button" id="searchbtn" onclick="onSearch()"><i class="fa fa-search"></i></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="MainMenu clearfix hidden-xs">
+                            <ul class="nav nav-tabs">
+                                <li>
+                                    <div class="dropdown clearfix">
+                                        <div class="dropButton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <div class="dp-hover is-hidden"><i class="fa fa-caret-down"></i></div>
+                                            Général</div>
+                                        <ul class="dropdown-menu hidemenu">
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=33"><li class="dp-menu" style="border-top:transparent;"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Configuration générale</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=34"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Configuration utilisateurs</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=35"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Personnalisation</li></a>
+                                        </ul>
+                                    </div> 
+                                </li>
+                                <li>
+                                    <div class="dropdown clearfix">
+                                        <div class="dropButton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <div class="dp-hover is-hidden"><i class="fa fa-caret-down"></i></div>
+                                            Comptabilité</div>
+                                        <ul class="dropdown-menu hidemenu">
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=37"><li class="dp-menu" style="border-top:transparent;"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Informations générales</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=38"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des comptes</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=39"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des écritures</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=40"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Etats comptables et financiers</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=41"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Paramètres comptables</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=42"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des immobilisations</li></a>
+                                        </ul>
+                                    </div> 
+                                </li>
+                                <li>
+                                    <div class="dropdown clearfix">
+                                        <div class="dropButton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <div class="dp-hover is-hidden"><i class="fa fa-caret-down"></i></div>
+                                            Ventes</div>
+                                        <ul class="dropdown-menu hidemenu">
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=45"><li class="dp-menu" style="border-top:transparent;"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Informations générales</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=46"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des clients</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=47"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Commandes et abonnements</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=48"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Facturation clients</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=49"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des comptes clients</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=50"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des moyens de paiement</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=51"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Configuration</li></a>
+                                        </ul>
+                                    </div> 
+                                </li>
+                                <li>
+                                    <div class="dropdown clearfix">
+                                        <div class="dropButton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <div class="dp-hover is-hidden"><i class="fa fa-caret-down"></i></div>
+                                            Achats</div>
+                                        <ul class="dropdown-menu hidemenu">
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=53"><li class="dp-menu" style="border-top:transparent;"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Informations générales</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=54"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des fournisseurs</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=55"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des contrats</li></a>
+                                        </ul>
+                                    </div> 
+                                </li>
+                                <li>
+                                    <div class="dropdown clearfix">
+                                        <div class="dropButton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <div class="dp-hover is-hidden"><i class="fa fa-caret-down"></i></div>
+                                            Articles et stocks</div>
+                                        <ul class="dropdown-menu hidemenu">
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=57"><li class="dp-menu" style="border-top:transparent;"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Informations générales</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=58"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des catégories d'articles
+                                                </li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=59"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des articles</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=60"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des stocks</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=61"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Configuration</li></a>
+                                        </ul>
+                                    </div> 
+                                </li>
+                                <li>
+                                    <div class="dropdown clearfix">
+                                        <div class="dropButton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <div class="dp-hover is-hidden"><i class="fa fa-caret-down"></i></div>
+                                            Projets</div>
+                                        <ul class="dropdown-menu hidemenu">
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=63"><li class="dp-menu" style="border-top:transparent;"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Informations générales</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=64"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Ajout et consultation de projets</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=65"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Saisie des tâches à réaliser</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=66"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Saisie des temps</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=67"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Planification</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=68"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Facturation des prestations</li></a>
+                                        </ul>
+                                    </div> 
+                                </li>
+                                <li>
+                                    <div class="dropdown clearfix">
+                                        <div class="dropButton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <div class="dp-hover is-hidden"><i class="fa fa-caret-down"></i></div>
+                                            Prospection commerciale (CRM)</div>
+                                        <ul class="dropdown-menu hidemenu">
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=173"><li class="dp-menu" style="border-top:transparent;"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Informations générales</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=174"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion de la base de données</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=177"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des campagnes de prospection</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=180"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion des actions à réaliser</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=181"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Reporting statistique de la prospection</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=182"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion de la documentation</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=185"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Configuration</li></a>
+                                        </ul>
+                                    </div> 
+                                </li>
+                                <li>
+                                    <div class="dropdown clearfix">
+                                        <div class="dropButton dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <div class="dp-hover is-hidden"><i class="fa fa-caret-down"></i></div>
+                                            Ressources Humaines (HRM)</div>
+                                        <ul class="dropdown-menu hidemenu">
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=188"><li class="dp-menu" style="border-top:transparent;"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Informations générales</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=189"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Administration du personnel</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=190"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion du temps de travail</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=191"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Gestion de la paie</li></a>
+                                            <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=192"><li class="dp-menu"><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                    Configuration</li></a>
+                                        </ul>
+                                    </div> 
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="PhoneMenu visible-xs">
+                            <i class="fa fa-bars" style="color: #06559d;"></i>
+                        </div> 
+                    </div><!-- MainBanner -->
+                </div><!-- row -->
+            </header>
+            <style>
+                .highlight { background-color: #FFFF88; }
+            </style>
+            <script>
+                $(document).ready(function () {
+                    $(window).keydown(function (event) {
+                        if (event.keyCode == 13)
+                        {
+                            event.preventDefault();
+                            return false;
+                        }
+                    });
+                    $('.submfield').keyup(function (event) {
+                        if (event.keyCode == 13) {
+                            $('#searchbtn').click();
+                        }
+                    });
+                });
+                function onSearch() {
+                    txt = escape($('#_SearchTxt').val().trim());
+                    if (txt == '')
+                        alert('Veuillez entrez une recherche!')
+                    else
+                        location = '/Scripts/sql.exe?SqlDB=shophelp_pub&Sql=ShopDoc_pub:Search.phs&_SearchTxt=' + txt;
+                }
+            </script>
+            <!-- START PHONE CONTENT -->
+            <div class="PhoneMenuContainer visible-xs" id="closed" style="left: -92%;">
+                <div class="panel-group SlideMenu" id="SlideAccordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel ">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#SlideAccordion" href="#SlideCollapse_31" aria-expanded="true" aria-controls="SlideCollapse_31">
+                            <div class="slideTitle slideStyle" role="tab" id="SlideHeading_31">
+                                Général<i class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="SlideCollapse_31" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="SlideHeading_31">
+                            <div class="slideContent"> 
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=33"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Configuration générale</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=34"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Configuration utilisateurs</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=35"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Personnalisation</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel ">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#SlideAccordion" href="#SlideCollapse_36" aria-expanded="true" aria-controls="SlideCollapse_36">
+                            <div class="slideTitle slideStyle" role="tab" id="SlideHeading_36">
+                                Comptabilité<i class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="SlideCollapse_36" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="SlideHeading_36">
+                            <div class="slideContent"> 
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=37"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=38"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des comptes</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=39"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des écritures</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=40"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Etats comptables et financiers</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=41"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Paramètres comptables</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=42"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des immobilisations</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel ">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#SlideAccordion" href="#SlideCollapse_44" aria-expanded="true" aria-controls="SlideCollapse_44">
+                            <div class="slideTitle slideStyle" role="tab" id="SlideHeading_44">
+                                Ventes<i class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="SlideCollapse_44" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="SlideHeading_44">
+                            <div class="slideContent"> 
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=45"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=46"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des clients</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=47"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Commandes et abonnements</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=48"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Facturation clients</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=49"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des comptes clients</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=50"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des moyens de paiement</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=51"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Configuration</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel ">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#SlideAccordion" href="#SlideCollapse_52" aria-expanded="true" aria-controls="SlideCollapse_52">
+                            <div class="slideTitle slideStyle" role="tab" id="SlideHeading_52">
+                                Achats<i class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="SlideCollapse_52" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="SlideHeading_52">
+                            <div class="slideContent"> 
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=53"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=54"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des fournisseurs</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=55"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des contrats</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel ">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#SlideAccordion" href="#SlideCollapse_56" aria-expanded="true" aria-controls="SlideCollapse_56">
+                            <div class="slideTitle slideStyle" role="tab" id="SlideHeading_56">
+                                Articles et stocks<i class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="SlideCollapse_56" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="SlideHeading_56">
+                            <div class="slideContent"> 
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=57"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=58"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des catégories d'articles
+                                        </li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=59"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des articles</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=60"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des stocks</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=61"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Configuration</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel ">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#SlideAccordion" href="#SlideCollapse_62" aria-expanded="true" aria-controls="SlideCollapse_62">
+                            <div class="slideTitle slideStyle" role="tab" id="SlideHeading_62">
+                                Projets<i class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="SlideCollapse_62" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="SlideHeading_62">
+                            <div class="slideContent"> 
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=63"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=64"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Ajout et consultation de projets</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=65"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Saisie des tâches à réaliser</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=66"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Saisie des temps</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=67"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Planification</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=68"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Facturation des prestations</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel ">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#SlideAccordion" href="#SlideCollapse_171" aria-expanded="true" aria-controls="SlideCollapse_171">
+                            <div class="slideTitle slideStyle" role="tab" id="SlideHeading_171">
+                                Prospection commerciale (CRM)<i class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="SlideCollapse_171" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="SlideHeading_171">
+                            <div class="slideContent"> 
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=173"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=174"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion de la base de données</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=177"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des campagnes de prospection</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=180"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des actions à réaliser</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=181"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Reporting statistique de la prospection</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=182"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion de la documentation</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=185"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Configuration</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel ">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#SlideAccordion" href="#SlideCollapse_172" aria-expanded="true" aria-controls="SlideCollapse_172">
+                            <div class="slideTitle slideStyle" role="tab" id="SlideHeading_172">
+                                Ressources Humaines (HRM)<i class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="SlideCollapse_172" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="SlideHeading_172">
+                            <div class="slideContent"> 
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=188"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=189"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Administration du personnel</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=190"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion du temps de travail</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=191"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion de la paie</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=192"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Configuration</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- PhoneMenuContainer -->
+            <!-- END PHONE CONTENT -->
+            <!-- START MAIN CONTENT -->
+            <div class="MainContainer clearfix">
+                <div class="HomeBanner">
+                    <h1>Bienvenue dans le centre d'aide de Blue Chameleon</h1>
+                </div>
+                <div class="panel-group phoneContent visible-xs" id="PhoneAccordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#PhoneAccordion" href="#PhoneCollapse_31" aria-expanded="true" aria-controls="PhoneCollapse_31">
+                            <div class="phoneContent-slide-title" role="tab" id="PhoneHeading_31">
+                                Général<i id="anim" class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="PhoneCollapse_31" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="PhoneHeading_31">
+                            <div class="phoneContent-slide-content">
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=33"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Configuration générale</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=34"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Configuration utilisateurs</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=35"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Personnalisation</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#PhoneAccordion" href="#PhoneCollapse_36" aria-expanded="true" aria-controls="PhoneCollapse_36">
+                            <div class="phoneContent-slide-title" role="tab" id="PhoneHeading_36">
+                                Comptabilité<i id="anim" class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="PhoneCollapse_36" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="PhoneHeading_36">
+                            <div class="phoneContent-slide-content">
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=37"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=38"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des comptes</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=39"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des écritures</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=40"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Etats comptables et financiers</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=41"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Paramètres comptables</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=42"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des immobilisations</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#PhoneAccordion" href="#PhoneCollapse_44" aria-expanded="true" aria-controls="PhoneCollapse_44">
+                            <div class="phoneContent-slide-title" role="tab" id="PhoneHeading_44">
+                                Ventes<i id="anim" class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="PhoneCollapse_44" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="PhoneHeading_44">
+                            <div class="phoneContent-slide-content">
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=45"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=46"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des clients</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=47"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Commandes et abonnements</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=48"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Facturation clients</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=49"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des comptes clients</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=50"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des moyens de paiement</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=51"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Configuration</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#PhoneAccordion" href="#PhoneCollapse_52" aria-expanded="true" aria-controls="PhoneCollapse_52">
+                            <div class="phoneContent-slide-title" role="tab" id="PhoneHeading_52">
+                                Achats<i id="anim" class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="PhoneCollapse_52" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="PhoneHeading_52">
+                            <div class="phoneContent-slide-content">
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=53"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=54"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des fournisseurs</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=55"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des contrats</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#PhoneAccordion" href="#PhoneCollapse_56" aria-expanded="true" aria-controls="PhoneCollapse_56">
+                            <div class="phoneContent-slide-title" role="tab" id="PhoneHeading_56">
+                                Articles et stocks<i id="anim" class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="PhoneCollapse_56" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="PhoneHeading_56">
+                            <div class="phoneContent-slide-content">
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=57"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=58"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des catégories d'articles
+                                        </li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=59"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des articles</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=60"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des stocks</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=61"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Configuration</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#PhoneAccordion" href="#PhoneCollapse_62" aria-expanded="true" aria-controls="PhoneCollapse_62">
+                            <div class="phoneContent-slide-title" role="tab" id="PhoneHeading_62">
+                                Projets<i id="anim" class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="PhoneCollapse_62" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="PhoneHeading_62">
+                            <div class="phoneContent-slide-content">
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=63"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=64"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Ajout et consultation de projets</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=65"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Saisie des tâches à réaliser</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=66"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Saisie des temps</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=67"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Planification</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=68"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Facturation des prestations</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#PhoneAccordion" href="#PhoneCollapse_171" aria-expanded="true" aria-controls="PhoneCollapse_171">
+                            <div class="phoneContent-slide-title" role="tab" id="PhoneHeading_171">
+                                Prospection commerciale (CRM)<i id="anim" class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="PhoneCollapse_171" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="PhoneHeading_171">
+                            <div class="phoneContent-slide-content">
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=173"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=174"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion de la base de données</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=177"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des campagnes de prospection</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=180"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion des actions à réaliser</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=181"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Reporting statistique de la prospection</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=182"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion de la documentation</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=185"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Configuration</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#PhoneAccordion" href="#PhoneCollapse_172" aria-expanded="true" aria-controls="PhoneCollapse_172">
+                            <div class="phoneContent-slide-title" role="tab" id="PhoneHeading_172">
+                                Ressources Humaines (HRM)<i id="anim" class="fa fa-angle-up fa-2x"></i></div>
+                        </a>
+                        <div id="PhoneCollapse_172" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="PhoneHeading_172">
+                            <div class="phoneContent-slide-content">
+                                <ul>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=188"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Informations générales</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=189"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Administration du personnel</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=190"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion du temps de travail</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=191"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Gestion de la paie</li></a>
+                                    <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=192"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                            Configuration</li></a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="desktopContent hidden-xs">
+                    <div class="mainContent clearfix">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_31" aria-expanded="false" aria-controls="collapse_31">
+                                    <div class="panel-heading" role="tab" id="heading_31">
+                                        <h4 class="panel-title">
+                                            Général<span><i id="fa-1" class="fa fa-angle-down" style="float:right;"></i></span></h4>
+                                    </div>
+                                </a>
+                                <div id="collapse_31" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_31" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body"> 
+                                        <div class="contentList col-sm-5">
+                                            <ul>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=33"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Configuration générale</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=34"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Configuration utilisateurs</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=35"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Personnalisation</li></a>
+                                            </ul>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_36" aria-expanded="false" aria-controls="collapse_36">
+                                    <div class="panel-heading" role="tab" id="heading_36">
+                                        <h4 class="panel-title">
+                                            Comptabilité<span><i id="fa-1" class="fa fa-angle-down" style="float:right;"></i></span></h4>
+                                    </div>
+                                </a>
+                                <div id="collapse_36" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_36" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body"> 
+                                        <div class="contentList col-sm-5">
+                                            <ul>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=37"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Informations générales</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=38"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des comptes</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=39"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des écritures</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=40"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Etats comptables et financiers</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=41"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Paramètres comptables</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=42"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des immobilisations</li></a>
+                                            </ul>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_44" aria-expanded="false" aria-controls="collapse_44">
+                                    <div class="panel-heading" role="tab" id="heading_44">
+                                        <h4 class="panel-title">
+                                            Ventes<span><i id="fa-1" class="fa fa-angle-down" style="float:right;"></i></span></h4>
+                                    </div>
+                                </a>
+                                <div id="collapse_44" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_44" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body"> 
+                                        <div class="contentList col-sm-5">
+                                            <ul>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=45"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Informations générales</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=46"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des clients</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=47"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Commandes et abonnements</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=48"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Facturation clients</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=49"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des comptes clients</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=50"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des moyens de paiement</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=51"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Configuration</li></a>
+                                            </ul>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_52" aria-expanded="false" aria-controls="collapse_52">
+                                    <div class="panel-heading" role="tab" id="heading_52">
+                                        <h4 class="panel-title">
+                                            Achats<span><i id="fa-1" class="fa fa-angle-down" style="float:right;"></i></span></h4>
+                                    </div>
+                                </a>
+                                <div id="collapse_52" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_52" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body"> 
+                                        <div class="contentList col-sm-5">
+                                            <ul>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=53"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Informations générales</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=54"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des fournisseurs</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=55"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des contrats</li></a>
+                                            </ul>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_56" aria-expanded="false" aria-controls="collapse_56">
+                                    <div class="panel-heading" role="tab" id="heading_56">
+                                        <h4 class="panel-title">
+                                            Articles et stocks<span><i id="fa-1" class="fa fa-angle-down" style="float:right;"></i></span></h4>
+                                    </div>
+                                </a>
+                                <div id="collapse_56" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_56" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body"> 
+                                        <div class="contentList col-sm-5">
+                                            <ul>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=57"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Informations générales</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=58"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des catégories d'articles
+                                                    </li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=59"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des articles</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=60"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des stocks</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=61"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Configuration</li></a>
+                                            </ul>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_62" aria-expanded="false" aria-controls="collapse_62">
+                                    <div class="panel-heading" role="tab" id="heading_62">
+                                        <h4 class="panel-title">
+                                            Projets<span><i id="fa-1" class="fa fa-angle-down" style="float:right;"></i></span></h4>
+                                    </div>
+                                </a>
+                                <div id="collapse_62" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_62" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body"> 
+                                        <div class="contentList col-sm-5">
+                                            <ul>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=63"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Informations générales</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=64"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Ajout et consultation de projets</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=65"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Saisie des tâches à réaliser</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=66"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Saisie des temps</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=67"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Planification</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=68"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Facturation des prestations</li></a>
+                                            </ul>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_171" aria-expanded="false" aria-controls="collapse_171">
+                                    <div class="panel-heading" role="tab" id="heading_171">
+                                        <h4 class="panel-title">
+                                            Prospection commerciale (CRM)<span><i id="fa-1" class="fa fa-angle-down" style="float:right;"></i></span></h4>
+                                    </div>
+                                </a>
+                                <div id="collapse_171" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_171" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body"> 
+                                        <div class="contentList col-sm-5">
+                                            <ul>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=173"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Informations générales</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=174"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion de la base de données</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=177"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des campagnes de prospection</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=180"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion des actions à réaliser</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=181"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Reporting statistique de la prospection</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=182"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion de la documentation</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=185"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Configuration</li></a>
+                                            </ul>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_172" aria-expanded="false" aria-controls="collapse_172">
+                                    <div class="panel-heading" role="tab" id="heading_172">
+                                        <h4 class="panel-title">
+                                            Ressources Humaines (HRM)<span><i id="fa-1" class="fa fa-angle-down" style="float:right;"></i></span></h4>
+                                    </div>
+                                </a>
+                                <div id="collapse_172" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_172" aria-expanded="false" style="height: 0px;">
+                                    <div class="panel-body"> 
+                                        <div class="contentList col-sm-5">
+                                            <ul>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=188"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Informations générales</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=189"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Administration du personnel</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=190"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion du temps de travail</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=191"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Gestion de la paie</li></a>
+                                                <a href="/Scripts/sql.exe?SqlDB=shophelp_pub&amp;Sql=ShopDoc_pub:Theme.phs&amp;_ThemeId=192"><li><i class="fa fa-caret-right"></i>&nbsp;&nbsp;
+                                                        Configuration</li></a>
+                                            </ul>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- Panel-group -->
+                    </div><!-- MainContainer -->
+                </div><!-- desktopContent -->
+            </div><!-- MainContainer -->
+            <!-- END MAIN CONTENT -->
+        </div><!-- Container -->
+
+        <!-- JAVASCRIPT -->
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>
