@@ -4,7 +4,7 @@
   height: 60px;
   padding: 10px;
   text-align: center;
-  background: #ccc;
+  background-color: #ccc;
   font-weight: bold;
   color: #444;
   text-decoration: none;
@@ -12,6 +12,8 @@
   bottom: 0;
   right: 0;
   display: none; }
+  .scrollToTop:hover {
+    background-color: #ACACAC; }
 
 .is-visible {
   display: block; }
@@ -77,9 +79,16 @@ a:hover {
 a:active {
   text-decoration: none; }
 
-p {
-  margin: 20px;
-  margin-top: 0; }
+.leftContent p, .leftContent ol, .leftContent ul {
+  margin: 4px 0 12px;
+  line-height: 20px; }
+
+.leftContent p {
+  text-align: justify; }
+
+.HomeBanner h1 {
+  text-align: left;
+  margin: 0 0 26px; }
 
 h1 {
   color: #555;
@@ -240,10 +249,6 @@ h4 {
 .breadcrumb a {
   color: gray; }
 
-.HomeBanner {
-  width: 100%;
-  padding: 0px 10px; }
-
 .phoneContent {
   margin-bottom: 20px;
   background-color: #004994; }
@@ -367,6 +372,55 @@ h4 {
 .hidemenu > a, .hidemenu li {
   display: block; }
 
+.LeftContent {
+  display: inline-block;
+  position: relative;
+  padding: 15px; }
+
+.img {
+  display: block;
+  position: relative;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  border-radius: 6px;
+  padding: 5px;
+  background-color: #f5f5f5;
+  height: auto;
+  width: 33%;
+  cursor: pointer;
+  margin: 15px 0 35px;
+  transition: all 175ms ease-in-out; }
+  .img:hover:after {
+    opacity: 1; }
+  .img:after {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content: "\f00e";
+    opacity: 0.8;
+    font-size: 2em !important;
+    position: absolute;
+    bottom: 12px;
+    right: 12px; }
+  .img.extend {
+    width: 100%; }
+    .img.extend:after {
+      content: "\f010";
+      font-size: 2.5em !important; }
+  .img img {
+    display: block;
+    width: 100%;
+    height: auto; }
+
+.page-content {
+  padding: 40px 0; }
+  .page-content:after {
+    content: "";
+    display: block;
+    clear: both; }
+
 @media (min-width: 320px) and (max-width: 375px) {
   .TextBanner {
     top: 7px;
@@ -411,8 +465,7 @@ h4 {
     list-style: none; }
 
   .RightContent {
-    float: right;
-    margin-bottom: 60px; }
+    float: right; }
 
   .RightContent li {
     margin-bottom: 10px; }
@@ -420,9 +473,6 @@ h4 {
   .imgDescription {
     padding-top: 5px;
     padding-bottom: 5px; }
-
-  img {
-    max-width: 100%; }
 
   .panel-group {
     margin-bottom: 25px; } }
@@ -459,6 +509,9 @@ h4 {
 /*--- TABLET ---*/
 @media (min-width: 768px) {
   .scrollToTop {
+    border-radius: 5px; }
+
+  .scrollToTop {
     width: 60px;
     bottom: 20px;
     right: 20px;
@@ -475,9 +528,6 @@ h4 {
     padding-right: 12%;
     padding-bottom: 5px;
     position: relative;
-    background-color: #FFF; }
-
-  .HomeBanner {
     background-color: #FFF; }
 
   .MainMenu {
@@ -537,10 +587,6 @@ h4 {
     height: 80px;
     z-index: 0; }
 
-  .HomeBanner {
-    background-color: #FFF;
-    margin: 0px; }
-
   .MainMenu {
     text-align: center;
     height: 121px;
@@ -571,9 +617,11 @@ h4 {
     width: 100%;
     left: 27px; }
 
+  .LeftContent {
+    padding: 0 30px; }
+
   .RightContent {
-    margin-right: 5%;
-    margin-top: 2%; }
+    margin-right: 5%; }
 
   .blockList {
     border-bottom: 1px solid #777;
